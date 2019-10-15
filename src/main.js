@@ -19,7 +19,8 @@ import {
   Col,
   DatePicker,
   Button,
-  RadioGroup
+  RadioGroup,
+  Autocomplete
 } from "element-ui";
 Vue.config.productionTip = false;
 Vue.use(Upload);
@@ -38,6 +39,7 @@ Vue.use(Input);
 Vue.use(Select);
 Vue.use(Button);
 Vue.use(RadioGroup);
+Vue.use(Autocomplete);
 new Vue({
   router,
   store,
