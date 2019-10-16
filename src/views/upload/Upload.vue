@@ -74,20 +74,13 @@
             </div>
           </el-form-item>
           <el-form-item label="具体位置" prop="detail_address">
-            <el-input
-              v-model="form.detail_address"
-              placeholder="请输入内容"
-              id="search"
-              name="search"
-              @change="searchKeyWords"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="具体位置" prop="detail_address">
+            <!-- <el-input v-model="form.detail_address" placeholder="请输入内容" @change="searchKeyWords"></el-input> -->
             <el-autocomplete
               v-model="form.detail_address"
               :fetch-suggestions="querySearchAsync"
               placeholder="请输入内容"
               @select="handleSelect"
+              class="autocomplete"
             ></el-autocomplete>
           </el-form-item>
           <el-form-item label="活动时间" prop="date">
@@ -239,10 +232,7 @@ export default {
           this.getMapData(result.districtList[0], "init");
         }
       });
-      this.Autocomplete = new AMap.Autocomplete({
-        city: "北京", //城市，默认全国
-        input: "search" //使用联想输入的input的id
-      });
+      this.Autocomplete = new AMap.Autocomplete({});
       this.PlaceSearch = new AMap.PlaceSearch({
         city: "北京",
         map: this.map,
@@ -250,8 +240,6 @@ export default {
         extensions: "all",
         pageSize: 30
       });
-      this.map.plugin(this.Autocomplete);
-      this.map.plugin(this.PlaceSearch);
     },
     getMapData(data, level) {
       const bounds = data.boundaries;
@@ -306,9 +294,12 @@ export default {
       this.PlaceSearch.search(name);
       this.PlaceSearch.on("markerClick", e => {
         console.log(e);
+        if (e && e.data) {
+          const { address, name } = e.data;
+          this.form.detail_address = address + "-" + name;
+        }
       });
     },
-    searchKeyWords() {},
     querySearchAsync(queryString, cb) {
       if (!queryString) return cb([]);
       this.Autocomplete.search(queryString);
@@ -326,6 +317,16 @@ export default {
       const { adcode, name } = city;
       this.PlaceSearch.setCity(adcode);
       this.PlaceSearch.search(name);
+      this.PlaceSearch.on("markerClick", e => {
+        console.log(e);
+        if (e && e.data) {
+          const { address, name, adname, cityname, pname } = e.data;
+          this.form.detail_address = address + "-" + name;
+          this.form.province = pname;
+          this.form.city = cityname;
+          this.form.district = adname;
+        }
+      });
     }
   }
 };
@@ -409,5 +410,8 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.autocomplete {
+  width: 100%;
 }
 </style>
