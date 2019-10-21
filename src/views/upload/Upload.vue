@@ -3,7 +3,12 @@
     <div class="content">
       <div class="picture-detail">
         <div :class="['upload-block', { 'have-image': uploadImage }]">
-          <input type="file" class="file" @change="uploadFile" />
+          <input
+            type="file"
+            class="file"
+            @change="uploadFile"
+            ref="enforeUpload"
+          />
           <div class="icon-upload">
             <img
               :src="uploadImage"
@@ -59,7 +64,7 @@
               </el-select>
               <el-col class="line" :span="1" prop="region" />
               <el-select
-                v-model="form.district"
+                v-model="form.region"
                 placeholder="区"
                 @change="searchRegionMapData"
                 :disabled="disabledRegion"
@@ -83,19 +88,21 @@
               class="autocomplete"
             ></el-autocomplete>
           </el-form-item>
-          <el-form-item label="活动时间" prop="date">
+          <el-form-item label="活动时间" prop="time">
             <el-date-picker
               type="date"
               placeholder="选择日期"
-              v-model="form.date"
+              v-model="form.time"
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="照片标签" prop="tags">
             <el-checkbox-group v-model="form.tags">
-              <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
-              <el-checkbox label="地推活动" name="type"></el-checkbox>
-              <el-checkbox label="线下主题活动" name="type"></el-checkbox>
-              <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
+              <el-checkbox
+                :label="tag.key_word"
+                name="type"
+                v-for="tag in tagArrs"
+                :key="tag.id"
+              ></el-checkbox>
             </el-checkbox-group>
           </el-form-item>
           <el-form-item label="照片状态" prop="publish">
@@ -104,8 +111,8 @@
               <el-radio label="unpublished">取消</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="照片描述" prop="desc">
-            <el-input type="textarea" v-model="form.desc"></el-input>
+          <el-form-item label="照片描述" prop="description">
+            <el-input type="textarea" v-model="form.description"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitForm('form')"
@@ -116,11 +123,11 @@
         </el-form>
       </div>
     </div>
-    <div id="a"></div>
   </div>
 </template>
 <script>
-import axios from "axios";
+import { createPictureInfo } from "@/services/upload";
+import { getAllTags } from "@/services/tag";
 const CHINA = "中国";
 export default {
   name: "upload",
@@ -130,12 +137,15 @@ export default {
       form: {
         name: "",
         province: "",
-        district: "",
+        province_code: "",
+        city: "",
+        city_code: "",
         region: "",
-        date: "",
+        region_code: "",
+        time: "",
         tags: [],
         publish: "",
-        desc: "",
+        description: "",
         detail_address: ""
       },
       rules: {
@@ -146,7 +156,7 @@ export default {
         province: [
           { required: true, message: "请选择照片所在的省", trigger: "change" }
         ],
-        district: [
+        city: [
           { required: true, message: "请选择照片所在的市", trigger: "change" }
         ],
         region: [
@@ -156,7 +166,7 @@ export default {
           { required: true, message: "请输入照片详细地址", trigger: "blur" },
           { min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
         ],
-        date: [
+        time: [
           {
             type: "date",
             required: true,
@@ -186,17 +196,35 @@ export default {
       Autocomplete: null,
       PlaceSearch: null,
       disabledCity: true,
-      disabledRegion: true
+      disabledRegion: true,
+      uploadData: new FormData(),
+      tagArrs: []
     };
   },
-  mounted() {
+  async mounted() {
     this.initMaps();
+    this.tagArrs = await getAllTags();
   },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        if (valid) {
-          alert("submit!");
+        if (valid && this.uploadImage) {
+          for (let key in this.form) {
+            if (this.form.hasOwnProperty(key)) {
+              if (key === "tags") {
+                this.uploadData.append(key, JSON.stringify(this.form[key]));
+              } else {
+                this.uploadData.append(key, this.form[key]);
+              }
+            }
+          }
+          createPictureInfo(this.uploadData)
+            .then(() => {
+              this.resetForm("form");
+            })
+            .catch(() => {
+              this.resetForm("form");
+            });
         } else {
           console.log("error submit!!");
           return false;
@@ -205,15 +233,14 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+      this.uploadData = new FormData();
+      this.uploadImage = "";
+      this.$refs.enforeUpload.value = null;
     },
     uploadFile(e) {
-      const uploadData = new FormData();
       const file = e.target.files[0];
-      uploadData.append(file.name, file);
+      this.uploadData.append(file.name, file);
       this.uploadImage = URL.createObjectURL(file);
-      axios.post(process.env.VUE_APP_UPLOAD_URL, uploadData).then(() => {
-        e.target.files = null;
-      });
     },
     initMaps() {
       const opts = {
@@ -236,9 +263,9 @@ export default {
       this.PlaceSearch = new AMap.PlaceSearch({
         city: "北京",
         map: this.map,
-        type: "风景名胜|餐饮服务",
+        type: "风景名胜",
         extensions: "all",
-        pageSize: 30
+        pageSize: 5
       });
     },
     getMapData(data, level) {
@@ -257,7 +284,6 @@ export default {
         }
         this.map.setFitView(); //地图自适应
       }
-      console.log(data.districtList);
       if (level === "province") {
         this.cityList = data.districtList;
       } else if (level === "city") {
@@ -289,16 +315,8 @@ export default {
       this.searchMapData(obj);
     },
     searchRegionMapData(obj) {
-      const { adcode, name } = obj;
-      this.PlaceSearch.setCity(adcode);
-      this.PlaceSearch.search(name);
-      this.PlaceSearch.on("markerClick", e => {
-        console.log(e);
-        if (e && e.data) {
-          const { address, name } = e.data;
-          this.form.detail_address = address + "-" + name;
-        }
-      });
+      this.searchMapData(obj);
+      this.handleCitySelect(obj);
     },
     querySearchAsync(queryString, cb) {
       if (!queryString) return cb([]);
@@ -314,17 +332,31 @@ export default {
       });
     },
     handleSelect(city) {
+      this.handleCitySelect(city);
+    },
+    handleCitySelect(city) {
       const { adcode, name } = city;
       this.PlaceSearch.setCity(adcode);
       this.PlaceSearch.search(name);
       this.PlaceSearch.on("markerClick", e => {
-        console.log(e);
         if (e && e.data) {
-          const { address, name, adname, cityname, pname } = e.data;
+          const {
+            address,
+            name,
+            adname,
+            adcode,
+            cityname,
+            citycode,
+            pname,
+            pcode
+          } = e.data;
           this.form.detail_address = address + "-" + name;
           this.form.province = pname;
+          this.form.province_code = pcode;
           this.form.city = cityname;
-          this.form.district = adname;
+          this.form.city_code = citycode;
+          this.form.region = adname;
+          this.form.region_code = adcode;
         }
       });
     }
@@ -351,10 +383,12 @@ export default {
         height: 250px;
         border: 2px dashed black;
         position: relative;
+        cursor: pointer;
         .file {
           width: 100%;
           height: 100%;
           opacity: 0;
+          cursor: pointer;
         }
         .icon-upload {
           position: absolute;
@@ -363,6 +397,7 @@ export default {
           right: 0;
           bottom: 0;
           z-index: -1;
+          cursor: pointer;
           .upload-icon-block {
             width: 100%;
             height: 100%;
