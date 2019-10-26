@@ -4,6 +4,7 @@ const instance = axios.create({
   timeout: 1000,
   headers: { "Content-Type": "application/json" }
 });
+console.log(process.env.VUE_APP_REQUEST_URL);
 instance.interceptors.request.use(
   function(config) {
     return config;

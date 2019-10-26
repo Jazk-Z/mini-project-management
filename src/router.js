@@ -2,9 +2,10 @@ import Vue from "vue";
 import Router from "vue-router";
 import Tags from "@/views/Tags/Tags";
 Vue.use(Router);
+console.log(process.env.VUE_APP_BASE_URL);
 export default new Router({
   mode: "history",
-  base: process.env.BASE_URL,
+  base: process.env.VUE_APP_BASE_URL,
   routes: [
     {
       path: "/login",
