@@ -38,6 +38,14 @@ export default new Router({
                 )
             }
           ]
+        },
+        {
+          path: "banners",
+          name: "banners",
+          component: () =>
+            import(
+              /* webpackChunkName: "banners" */ "./views/Banners/CreateBanners.vue"
+            )
         }
       ]
     }

@@ -68,6 +68,7 @@ export default {
         this.isChoosedIndex = null;
       } else {
         this.iconRotateIndex = index;
+        this.chooseRouter(0, this.routerConfigData[index].childern[0]);
       }
     },
     chooseRouter(index, { path }) {

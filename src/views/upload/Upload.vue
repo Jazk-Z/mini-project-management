@@ -2,31 +2,10 @@
   <div class="container">
     <div class="content">
       <div class="picture-detail">
-        <div :class="['upload-block', { 'have-image': uploadImage }]">
-          <input
-            type="file"
-            class="file"
-            @change="uploadFile"
-            ref="enforeUpload"
-          />
-          <div class="icon-upload">
-            <img
-              :src="uploadImage"
-              alt="upload-image"
-              v-if="uploadImage"
-              class="upload-icon-block"
-            />
-            <div class="upload-icon-block" v-if="!uploadImage">
-              <div class="icon">
-                <img src="../../assets/upload.svg" alt="upload" />
-              </div>
-              <div class="text">
-                将文件拖到此处，或
-                <em>点击上传</em>
-              </div>
-            </div>
-          </div>
-        </div>
+        <UploadImage
+          @upload-success="uploadSuccess"
+          ref="uploadImage"
+        ></UploadImage>
         <div id="map"></div>
       </div>
       <div class="picture-block">
@@ -128,6 +107,7 @@
 <script>
 import { createPictureInfo } from "@/services/upload";
 import { getAllTags } from "@/services/tag";
+import UploadImage from "@/components/Upload/Upload";
 const CHINA = "中国";
 export default {
   name: "upload",
@@ -192,13 +172,13 @@ export default {
       provinceList: [],
       cityList: [],
       regionList: [],
-      uploadImage: "",
       Autocomplete: null,
       PlaceSearch: null,
       disabledCity: true,
       disabledRegion: true,
       uploadData: new FormData(),
-      tagArrs: []
+      tagArrs: [],
+      uploadImage: false
     };
   },
   async mounted() {
@@ -206,6 +186,9 @@ export default {
     this.tagArrs = await getAllTags();
   },
   methods: {
+    uploadSuccess() {
+      this.uploadImage = true;
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid && this.uploadImage) {
@@ -234,13 +217,9 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
       this.uploadData = new FormData();
-      this.uploadImage = "";
-      this.$refs.enforeUpload.value = null;
-    },
-    uploadFile(e) {
-      const file = e.target.files[0];
-      this.uploadData.append(file.name, file);
-      this.uploadImage = URL.createObjectURL(file);
+      this.uploadImage = false;
+      this.$refs.uploadImage.clear();
+      console.log(this.form);
     },
     initMaps() {
       const opts = {
@@ -360,6 +339,14 @@ export default {
         }
       });
     }
+  },
+  components: {
+    UploadImage
+  },
+  provide() {
+    return {
+      fileData: this.uploadData
+    };
   }
 };
 </script>
@@ -378,58 +365,6 @@ export default {
       justify-content: space-between;
       align-items: center;
       margin-right: 25px;
-      .upload-block {
-        width: 400px;
-        height: 250px;
-        border: 2px dashed black;
-        position: relative;
-        cursor: pointer;
-        .file {
-          width: 100%;
-          height: 100%;
-          opacity: 0;
-          cursor: pointer;
-        }
-        .icon-upload {
-          position: absolute;
-          left: 0;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          z-index: -1;
-          cursor: pointer;
-          .upload-icon-block {
-            width: 100%;
-            height: 100%;
-            display: block;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            .icon {
-              width: 70px;
-              height: 70px;
-              img {
-                display: block;
-                width: 70px;
-                height: 70px;
-              }
-            }
-            .text {
-              color: #606266;
-              font-size: 14px;
-              text-align: center;
-              em {
-                color: #409eff;
-                font-style: normal;
-              }
-            }
-          }
-        }
-      }
-      .have-image {
-        border: 2px dashed lightblue;
-      }
       #map {
         width: 404px;
         height: 250px;

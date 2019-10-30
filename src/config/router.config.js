@@ -11,6 +11,10 @@ const routers = [
       {
         name: "标签管理",
         path: "/mini-program/tags"
+      },
+      {
+        name: "Banner管理",
+        path: "/mini-program/banners"
       }
     ]
   }
