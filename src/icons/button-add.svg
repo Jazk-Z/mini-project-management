@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.4 (67378) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon/Save</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M10.8056641,5.5078125 L6.45117188,5.5078125 L6.45117188,1.26269531 C6.45117188,0.990625 6.23105469,0.770507812 5.95898438,0.770507812 C5.68691406,0.770507812 5.46679688,0.990625 5.46679688,1.26269531 L5.46679688,5.5078125 L1.20800781,5.5078125 C0.9359375,5.5078125 0.715820312,5.72792969 0.715820312,6 C0.715820312,6.27207031 0.9359375,6.4921875 1.20800781,6.4921875 L5.46679688,6.4921875 L5.46679688,10.7509766 C5.46679688,11.0230469 5.68691406,11.2431641 5.95898438,11.2431641 C6.23105469,11.2431641 6.45117188,11.0230469 6.45117188,10.7509766 L6.45117188,6.4921875 L10.8056641,6.4921875 C11.0777344,6.4921875 11.2978516,6.27207031 11.2978516,6 C11.2978516,5.72792969 11.0777344,5.5078125 10.8056641,5.5078125 Z" id="path-1"></path>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="新建商品" transform="translate(-772.000000, -844.000000)">
+            <g id="Group-21" transform="translate(280.000000, 186.000000)">
+                <g id="Group-10">
+                    <g id="Group-19" transform="translate(288.000000, 32.000000)">
+                        <g id="Button/Dashed/Icon/Medium" transform="translate(92.000000, 616.000000)">
+                            <g id="Group" transform="translate(111.000000, 5.000000)">
+                                <g id="Icon/Save" transform="translate(1.000000, 5.000000)">
+                                    <mask id="mask-2" fill="white">
+                                        <use xlink:href="#path-1"></use>
+                                    </mask>
+                                    <g id="Mask" fill-rule="nonzero"></g>
+                                    <g id="↳Color/Title" mask="url(#mask-2)" fill="#000000" fill-opacity="0.65">
+                                        <g transform="translate(-33.666667, -30.166667)" id="Oval-Copy-6">
+                                            <circle cx="35" cy="35" r="35"></circle>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
