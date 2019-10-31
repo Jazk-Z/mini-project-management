@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.4 (67378) - http://www.bohemiancoding.com/sketch -->
+    <title>iconVip</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="导航栏" transform="translate(-448.000000, -164.000000)">
+            <g id="iconVip-Copy" transform="translate(448.000000, 164.000000)">
+                <rect id="Rectangle" x="0.194782609" y="0.194782609" width="15.6104348" height="15.6104348"></rect>
+                <circle id="Oval" stroke="#FFFFFF" stroke-width="1.04347826" stroke-linecap="round" stroke-linejoin="round" cx="8" cy="8" r="5.37043478"></circle>
+                <path d="M5.62434783,6.70608696 C5.83175897,6.70314618 6.02246276,6.81946197 6.11478261,7.00521739 L7.34956522,9.62086957 C7.44481273,9.82067868 7.64647622,9.94790262 7.86782609,9.94782609 L8.13217391,9.94782609 C8.35352378,9.94790262 8.55518727,9.82067868 8.65043478,9.62086957 L9.88521739,7.00521739 C9.97753724,6.81946197 10.168241,6.70314618 10.3756522,6.70608696" id="Path" stroke="#FFFFFF" stroke-width="1.04347826" stroke-linecap="round" stroke-linejoin="round"></path>
+                <rect id="Rectangle" fill="#FFFFFF" x="7.43652174" y="9.23826087" width="1.1026087" height="1"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

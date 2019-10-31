@@ -91,29 +91,33 @@ export default {
   left: 0;
   top: 0;
   height: 100vh;
-  background-color: rgb(84, 92, 100);
+  background-color: rgba(0, 21, 41, 1);
   color: #fff;
+  box-shadow: 2px 0px 6px 0px rgba(0, 21, 41, 0.35);
   .nav-title {
     width: 240px;
     text-align: center;
-    height: 60px;
-    line-height: 60px;
-    background-color: #3a363e;
-    font-size: 26px;
-    border-bottom: 1px solid slategrey;
+    height: 64px;
+    line-height: 64px;
+    background-color: #002140;
+    font-size: 20px;
   }
   .nav-item-container {
     cursor: pointer;
     height: auto;
     transition: height 3s ease;
+    margin-top: 8px;
     .nav-item-content {
       padding: 0 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       height: 56px;
+      background-color: rgba(0, 21, 41, 1);
+      opacity: 0.65;
       &:hover {
-        background-color: rgb(67, 74, 80);
+        background-color: rgba(24, 144, 255, 1);
+        opacity: 1;
       }
       .nav-item-left {
         display: flex;
@@ -140,13 +144,18 @@ export default {
         padding: 0 45px 0 40px;
         height: 50px;
         line-height: 50px;
-        background-color: rgb(75, 82, 90);
+        background-color: #000d18;
+        box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.45);
+        opacity: 0.65;
         &:hover {
-          background-color: rgb(67, 74, 80);
+          background-color: rgba(24, 144, 255, 1);
+          opacity: 1;
         }
       }
       .list-active {
-        background-color: rgb(67, 74, 80);
+        background-color: rgba(24, 144, 255, 1);
+        color: #fff;
+        opacity: 1;
       }
     }
   }
