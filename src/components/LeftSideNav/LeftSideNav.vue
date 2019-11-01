@@ -83,10 +83,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 .container {
-  width: 240px;
+  width: 256px;
 }
 .left-silde-container {
-  width: 240px;
+  width: 256px;
   position: fixed;
   left: 0;
   top: 0;
@@ -94,8 +94,9 @@ export default {
   background-color: rgba(0, 21, 41, 1);
   color: #fff;
   box-shadow: 2px 0px 6px 0px rgba(0, 21, 41, 0.35);
+  z-index: 3;
   .nav-title {
-    width: 240px;
+    width: 256px;
     text-align: center;
     height: 64px;
     line-height: 64px;
@@ -161,7 +162,7 @@ export default {
   }
 }
 .null {
-  width: 240px;
+  width: 256px;
   height: 100%;
 }
 .icon {

@@ -1,119 +1,133 @@
 <template>
-  <div class="container">
-    <div class="content">
-      <div class="picture-detail">
-        <UploadImage
-          @upload-success="uploadSuccess"
-          ref="uploadImage"
-        ></UploadImage>
-        <div id="map"></div>
+  <VContent :title="title" :route="route">
+    <template #body>
+      <div class="upload-container">
+        <div class="content">
+          <div class="picture-detail">
+            <UploadImage
+              @upload-success="uploadSuccess"
+              ref="uploadImage"
+            ></UploadImage>
+            <div id="map"></div>
+          </div>
+          <div class="picture-block">
+            <el-form ref="form" :model="form" label-width="80px" :rules="rules">
+              <el-form-item label="照片名称" prop="name">
+                <el-input v-model="form.name"></el-input>
+              </el-form-item>
+              <el-form-item label="活动区域" prop="province">
+                <div class="l">
+                  <el-select
+                    v-model="form.province"
+                    placeholder="省"
+                    @change="searchProvinceMapData"
+                  >
+                    <el-option
+                      v-for="item in provinceList"
+                      :key="item.adcode"
+                      :label="item.name"
+                      :value="item"
+                    ></el-option>
+                  </el-select>
+                  <el-col class="line" :span="1" prop="city" />
+                  <el-select
+                    v-model="form.city"
+                    placeholder="市"
+                    @change="searchCityMapData"
+                    :disabled="disabledCity"
+                  >
+                    <el-option
+                      v-for="item in cityList"
+                      :key="item.adcode"
+                      :label="item.name"
+                      :value="item"
+                    ></el-option>
+                  </el-select>
+                  <el-col class="line" :span="1" prop="region" />
+                  <el-select
+                    v-model="form.region"
+                    placeholder="区"
+                    @change="searchRegionMapData"
+                    :disabled="disabledRegion"
+                  >
+                    <el-option
+                      v-for="item in regionList"
+                      :key="item.adcode"
+                      :label="item.name"
+                      :value="item"
+                    ></el-option>
+                  </el-select>
+                </div>
+              </el-form-item>
+              <el-form-item label="具体位置" prop="detail_address">
+                <!-- <el-input v-model="form.detail_address" placeholder="请输入内容" @change="searchKeyWords"></el-input> -->
+                <el-autocomplete
+                  v-model="form.detail_address"
+                  :fetch-suggestions="querySearchAsync"
+                  placeholder="请输入内容"
+                  @select="handleSelect"
+                  class="autocomplete"
+                ></el-autocomplete>
+              </el-form-item>
+              <el-form-item label="活动时间" prop="time">
+                <el-date-picker
+                  type="date"
+                  placeholder="选择日期"
+                  v-model="form.time"
+                ></el-date-picker>
+              </el-form-item>
+              <el-form-item label="照片标签" prop="tags">
+                <el-checkbox-group v-model="form.tags">
+                  <el-checkbox
+                    :label="tag.key_word"
+                    name="type"
+                    v-for="tag in tagArrs"
+                    :key="tag.id"
+                  ></el-checkbox>
+                </el-checkbox-group>
+              </el-form-item>
+              <el-form-item label="照片状态" prop="publish">
+                <el-radio-group v-model="form.publish">
+                  <el-radio label="published">发布</el-radio>
+                  <el-radio label="unpublished">取消</el-radio>
+                </el-radio-group>
+              </el-form-item>
+              <el-form-item label="照片描述" prop="description">
+                <el-input type="textarea" v-model="form.description"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="submitForm('form')"
+                  >立即上传</el-button
+                >
+                <el-button @click="resetForm('form')">重置</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+        </div>
       </div>
-      <div class="picture-block">
-        <el-form ref="form" :model="form" label-width="80px" :rules="rules">
-          <el-form-item label="照片名称" prop="name">
-            <el-input v-model="form.name"></el-input>
-          </el-form-item>
-          <el-form-item label="活动区域" prop="province">
-            <div class="l">
-              <el-select
-                v-model="form.province"
-                placeholder="省"
-                @change="searchProvinceMapData"
-              >
-                <el-option
-                  v-for="item in provinceList"
-                  :key="item.adcode"
-                  :label="item.name"
-                  :value="item"
-                ></el-option>
-              </el-select>
-              <el-col class="line" :span="1" prop="city" />
-              <el-select
-                v-model="form.city"
-                placeholder="市"
-                @change="searchCityMapData"
-                :disabled="disabledCity"
-              >
-                <el-option
-                  v-for="item in cityList"
-                  :key="item.adcode"
-                  :label="item.name"
-                  :value="item"
-                ></el-option>
-              </el-select>
-              <el-col class="line" :span="1" prop="region" />
-              <el-select
-                v-model="form.region"
-                placeholder="区"
-                @change="searchRegionMapData"
-                :disabled="disabledRegion"
-              >
-                <el-option
-                  v-for="item in regionList"
-                  :key="item.adcode"
-                  :label="item.name"
-                  :value="item"
-                ></el-option>
-              </el-select>
-            </div>
-          </el-form-item>
-          <el-form-item label="具体位置" prop="detail_address">
-            <!-- <el-input v-model="form.detail_address" placeholder="请输入内容" @change="searchKeyWords"></el-input> -->
-            <el-autocomplete
-              v-model="form.detail_address"
-              :fetch-suggestions="querySearchAsync"
-              placeholder="请输入内容"
-              @select="handleSelect"
-              class="autocomplete"
-            ></el-autocomplete>
-          </el-form-item>
-          <el-form-item label="活动时间" prop="time">
-            <el-date-picker
-              type="date"
-              placeholder="选择日期"
-              v-model="form.time"
-            ></el-date-picker>
-          </el-form-item>
-          <el-form-item label="照片标签" prop="tags">
-            <el-checkbox-group v-model="form.tags">
-              <el-checkbox
-                :label="tag.key_word"
-                name="type"
-                v-for="tag in tagArrs"
-                :key="tag.id"
-              ></el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
-          <el-form-item label="照片状态" prop="publish">
-            <el-radio-group v-model="form.publish">
-              <el-radio label="published">发布</el-radio>
-              <el-radio label="unpublished">取消</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="照片描述" prop="description">
-            <el-input type="textarea" v-model="form.description"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="submitForm('form')"
-              >立即上传</el-button
-            >
-            <el-button @click="resetForm('form')">重置</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-    </div>
-  </div>
+    </template>
+  </VContent>
 </template>
 <script>
 import { createPictureInfo } from "@/services/upload";
 import { getAllTags } from "@/services/tag";
 import UploadImage from "@/components/Upload/Upload";
+import VContent from "@/components/VContent";
 const CHINA = "中国";
 export default {
   name: "upload",
   data() {
     return {
-      action: process.env.VUE_APP_UPLOAD_URL,
+      title: "上传记录图片",
+      route: [
+        {
+          name: "图片管理",
+          path: "/"
+        },
+        {
+          name: "上传记录图片"
+        }
+      ],
       form: {
         name: "",
         province: "",
@@ -341,7 +355,8 @@ export default {
     }
   },
   components: {
-    UploadImage
+    UploadImage,
+    VContent
   },
   provide() {
     return {
@@ -351,12 +366,11 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.container {
+.upload-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
   .content {
     display: flex;
     .picture-detail {

@@ -2,17 +2,20 @@
   <div id="app">
     <LeftSideNav></LeftSideNav>
     <div class="right-view">
+      <PageNav></PageNav>
       <router-view />
     </div>
   </div>
 </template>
 <script>
 import LeftSideNav from "@/components/LeftSideNav/LeftSideNav";
+import PageNav from "@/components/PageNav";
 export default {
   name: "app",
   mounted() {},
   components: {
-    LeftSideNav
+    LeftSideNav,
+    PageNav
   }
 };
 </script>

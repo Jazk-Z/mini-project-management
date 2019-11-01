@@ -1,81 +1,96 @@
 <template>
-  <div class="create-banner">
-    <UploadImage ref="upload"></UploadImage>
-    <el-form
-      :model="ruleForm"
-      :rules="rules"
-      ref="ruleForm"
-      label-width="130px"
-      class="demo-ruleForm"
-    >
-      <el-form-item label="Banner生效时间" required>
-        <el-col :span="11">
-          <el-form-item prop="start-date">
-            <el-date-picker
-              type="date"
-              placeholder="选择日期"
-              v-model="ruleForm['start-date']"
-              style="width: 100%;"
-            ></el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col class="line" :span="2">-</el-col>
-        <el-col :span="11">
-          <el-form-item prop="start-time">
-            <el-time-picker
-              placeholder="选择时间"
-              v-model="ruleForm['start-time']"
-              style="width: 100%;"
-            ></el-time-picker>
-          </el-form-item>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="Banner失效时间" required>
-        <el-col :span="11">
-          <el-form-item prop="end-date">
-            <el-date-picker
-              type="date"
-              placeholder="选择日期"
-              v-model="ruleForm['end-date']"
-              style="width: 100%;"
-            ></el-date-picker>
-          </el-form-item>
-        </el-col>
-        <el-col class="line" :span="2">-</el-col>
-        <el-col :span="11">
-          <el-form-item prop="end-time">
-            <el-time-picker
-              placeholder="选择时间"
-              v-model="ruleForm['end-time']"
-              style="width: 100%;"
-            ></el-time-picker>
-          </el-form-item>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="照片状态" prop="publish">
-        <el-radio-group v-model="ruleForm.publish">
-          <el-radio label="published">发布</el-radio>
-          <el-radio label="unpublished">取消</el-radio>
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="照片描述" prop="description">
-        <el-input type="textarea" v-model="ruleForm.description"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')"
-          >立即创建</el-button
+  <VContent :title="title" :route="route">
+    <template #body>
+      <div class="create-banner">
+        <UploadImage ref="upload"></UploadImage>
+        <el-form
+          :model="ruleForm"
+          :rules="rules"
+          ref="ruleForm"
+          label-width="130px"
+          class="form"
         >
-        <el-button @click="resetForm('ruleForm')">重置</el-button>
-      </el-form-item>
-    </el-form>
-  </div>
+          <el-form-item label="Banner生效时间" required>
+            <el-col :span="11">
+              <el-form-item prop="start-date">
+                <el-date-picker
+                  type="date"
+                  placeholder="选择日期"
+                  v-model="ruleForm['start-date']"
+                  style="width: 100%;"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col class="line" :span="2">-</el-col>
+            <el-col :span="11">
+              <el-form-item prop="start-time">
+                <el-time-picker
+                  placeholder="选择时间"
+                  v-model="ruleForm['start-time']"
+                  style="width: 100%;"
+                ></el-time-picker>
+              </el-form-item>
+            </el-col>
+          </el-form-item>
+          <el-form-item label="Banner失效时间" required>
+            <el-col :span="11">
+              <el-form-item prop="end-date">
+                <el-date-picker
+                  type="date"
+                  placeholder="选择日期"
+                  v-model="ruleForm['end-date']"
+                  style="width: 100%;"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col class="line" :span="2">-</el-col>
+            <el-col :span="11">
+              <el-form-item prop="end-time">
+                <el-time-picker
+                  placeholder="选择时间"
+                  v-model="ruleForm['end-time']"
+                  style="width: 100%;"
+                ></el-time-picker>
+              </el-form-item>
+            </el-col>
+          </el-form-item>
+          <el-form-item label="照片状态" prop="publish">
+            <el-radio-group v-model="ruleForm.publish">
+              <el-radio label="published">发布</el-radio>
+              <el-radio label="unpublished">取消</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="照片描述" prop="description">
+            <el-input type="textarea" v-model="ruleForm.description"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="submitForm('ruleForm')"
+              >立即创建</el-button
+            >
+            <el-button @click="resetForm('ruleForm')">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </template>
+  </VContent>
 </template>
 <script>
 import UploadImage from "@/components/Upload/Upload";
+import VContent from "@/components/VContent";
 export default {
   name: "CreateBanners",
   data() {
     return {
+      title: "创建Banner",
+      route: [
+        {
+          name: "Banner",
+          path: "/"
+        },
+        {
+          name: "创建Banner"
+        }
+      ],
       fileData: new FormData(),
       ruleForm: {
         description: "",
@@ -124,7 +139,8 @@ export default {
     };
   },
   components: {
-    UploadImage
+    UploadImage,
+    VContent
   },
   provide() {
     return {
@@ -153,6 +169,9 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  .form {
+    margin-left: 40px;
+  }
   .line {
     text-align: center;
   }

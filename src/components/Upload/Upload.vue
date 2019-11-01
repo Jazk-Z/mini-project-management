@@ -56,6 +56,8 @@ export default {
     height: 100%;
     opacity: 0;
     cursor: pointer;
+    position: relative;
+    z-index: 1;
   }
   .icon-upload {
     position: absolute;
@@ -63,7 +65,7 @@ export default {
     top: 0;
     right: 0;
     bottom: 0;
-    z-index: -1;
+    z-index: 0;
     cursor: pointer;
     .upload-icon-block {
       width: 100%;

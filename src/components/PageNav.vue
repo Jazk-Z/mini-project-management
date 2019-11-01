@@ -10,20 +10,15 @@
 
 <script>
 import logo from "@/assets/logo/nav_logo.png";
-import { mapState } from "vuex";
 export default {
   name: "PageNav",
   data() {
     return {
       img: {
         logo
-      }
+      },
+      username: "忠有"
     };
-  },
-  computed: {
-    ...mapState({
-      username: state => state.user.mail
-    })
   },
   methods: {
     quit() {
@@ -35,31 +30,40 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.h--c-v--sb {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .container {
   position: fixed;
   top: 0;
   right: 0;
   left: 256px;
   height: 64px;
-  background-color: $nav-header-bg;
-  box-shadow: 0 1px 4px 0 $nav-header-shadow;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 1px 4px 0px rgba(0, 21, 41, 0.12);
   padding: 17px 32px;
   @extend .h--c-v--sb;
   z-index: 10;
   transition: all 0.3s ease;
   .logo {
     display: block;
-    width: 122px;
-    height: 30px;
+    width: 200px;
   }
   .show {
     @extend .h--c-v--sb;
-    font-size: $common-font-size;
-    color: $common-font-color;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.65);
+    cursor: pointer;
     .quit {
       margin-left: 15px;
-      color: $common-font-color;
-      background-color: $white;
+      color: rgba(0, 0, 0, 0.65);
+      background-color: #fff;
+      outline: none;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
     }
   }
 }
