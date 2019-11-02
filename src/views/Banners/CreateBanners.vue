@@ -2,7 +2,7 @@
   <VContent :title="title" :route="route">
     <template #body>
       <div class="create-banner">
-        <UploadImage ref="upload"></UploadImage>
+        <UploadImage ref="upload" @upload-success="handleFile"></UploadImage>
         <el-form
           :model="ruleForm"
           :rules="rules"
@@ -10,58 +10,36 @@
           label-width="130px"
           class="form"
         >
-          <el-form-item label="Banner生效时间" required>
-            <el-col :span="11">
-              <el-form-item prop="start-date">
-                <el-date-picker
-                  type="date"
-                  placeholder="选择日期"
-                  v-model="ruleForm['start-date']"
-                  style="width: 100%;"
-                ></el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col class="line" :span="2">-</el-col>
-            <el-col :span="11">
-              <el-form-item prop="start-time">
-                <el-time-picker
-                  placeholder="选择时间"
-                  v-model="ruleForm['start-time']"
-                  style="width: 100%;"
-                ></el-time-picker>
-              </el-form-item>
-            </el-col>
+          <el-form-item label="Banner展示时间" prop="time">
+            <el-date-picker
+              v-model="ruleForm.time"
+              type="datetimerange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              style="width: 100%;"
+            ></el-date-picker>
           </el-form-item>
-          <el-form-item label="Banner失效时间" required>
-            <el-col :span="11">
-              <el-form-item prop="end-date">
-                <el-date-picker
-                  type="date"
-                  placeholder="选择日期"
-                  v-model="ruleForm['end-date']"
-                  style="width: 100%;"
-                ></el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col class="line" :span="2">-</el-col>
-            <el-col :span="11">
-              <el-form-item prop="end-time">
-                <el-time-picker
-                  placeholder="选择时间"
-                  v-model="ruleForm['end-time']"
-                  style="width: 100%;"
-                ></el-time-picker>
-              </el-form-item>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="照片状态" prop="publish">
+          <el-form-item label="Banner状态" prop="publish">
             <el-radio-group v-model="ruleForm.publish">
               <el-radio label="published">发布</el-radio>
               <el-radio label="unpublished">取消</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item label="照片描述" prop="description">
+          <el-form-item label="Banner描述" prop="description">
             <el-input type="textarea" v-model="ruleForm.description"></el-input>
+          </el-form-item>
+          <el-form-item label="Banner路径跳转" prop="path">
+            <el-input v-model="ruleForm.path"></el-input>
+          </el-form-item>
+          <el-form-item label="Banner所属" prop="type">
+            <el-radio-group v-model="ruleForm.type">
+              <el-radio label="mini">微信小程序</el-radio>
+              <el-radio label="rn">React Native</el-radio>
+              <el-radio label="web">WEB端</el-radio>
+              <el-radio label="native">原生端</el-radio>
+              <el-radio label="flutter">Flutter</el-radio>
+            </el-radio-group>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')"
@@ -77,6 +55,7 @@
 <script>
 import UploadImage from "@/components/Upload/Upload";
 import VContent from "@/components/VContent";
+import { createBanner } from "@/services/banner";
 export default {
   name: "CreateBanners",
   data() {
@@ -94,7 +73,10 @@ export default {
       fileData: new FormData(),
       ruleForm: {
         description: "",
-        publish: ""
+        publish: "",
+        time: [],
+        path: "",
+        type: ""
       },
       rules: {
         publish: [
@@ -103,39 +85,21 @@ export default {
         description: [
           { required: true, message: "请填写活动形式", trigger: "blur" }
         ],
-        "start-date": [
+        time: [
           {
-            type: "date",
             required: true,
             message: "请选择日期",
             trigger: "change"
           }
         ],
-        "start-time": [
-          {
-            type: "date",
-            required: true,
-            message: "请选择时间",
-            trigger: "change"
-          }
+        path: [
+          { required: true, message: "请输入Banner跳转路径", trigger: "blur" }
         ],
-        "end-date": [
-          {
-            type: "date",
-            required: true,
-            message: "请选择日期",
-            trigger: "change"
-          }
-        ],
-        "end-time": [
-          {
-            type: "date",
-            required: true,
-            message: "请选择时间",
-            trigger: "change"
-          }
+        type: [
+          { required: true, message: "请选择Banner所属", trigger: "change" }
         ]
-      }
+      },
+      existImageUrl: null
     };
   },
   components: {
@@ -148,10 +112,24 @@ export default {
     };
   },
   methods: {
+    handleTime() {
+      this.fileData.append("start_time", this.ruleForm.time[0]);
+      this.fileData.append("end_time", this.ruleForm.time[1]);
+      this.fileData.append("description", this.ruleForm.description);
+      this.fileData.append("publish", this.ruleForm.publish);
+      this.fileData.append("path", this.ruleForm.path);
+      this.fileData.append("type", this.ruleForm.type);
+      return this.fileData;
+    },
+    handleFile() {
+      this.existImageUrl = true;
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
-        if (valid) {
-          alert("submit!");
+        if (valid && this.existImageUrl) {
+          createBanner(this.handleTime())
+            .then(() => {})
+            .catch(() => {});
         } else {
           console.log("error submit!!");
           return false;
@@ -160,7 +138,13 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+      this.existImageUrl = null;
+      this.fileData = new FormData();
+      this.$refs.upload.clear();
     }
+  },
+  watch: {
+    startTime() {}
   }
 };
 </script>
