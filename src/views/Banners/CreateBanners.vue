@@ -56,6 +56,7 @@
 import UploadImage from "@/components/Upload/Upload";
 import VContent from "@/components/VContent";
 import { createBanner } from "@/services/banner";
+import { Message } from "element-ui";
 export default {
   name: "CreateBanners",
   data() {
@@ -128,10 +129,17 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid && this.existImageUrl) {
           createBanner(this.handleTime())
-            .then(() => {})
-            .catch(() => {});
+            .then(() => {
+              Message.success("上传成功");
+              this.resetForm("ruleForm");
+            })
+            .catch(() => {
+              Message.error("上传失败");
+              this.resetForm("ruleForm");
+            });
         } else {
-          console.log("error submit!!");
+          Message.warning("参数验证失败");
+          this.resetForm("ruleForm");
           return false;
         }
       });
